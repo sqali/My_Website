@@ -1,0 +1,27 @@
+name: Deploying the containerised image to ACR
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  containerize_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Create a copy of the Github code in the container
+      uses: actions/checkout@v2
+
+    - name: Login to ACR
+      uses: azure/docker-login@v1
+      with: 
+        login-server: ${{ secrets.ACR_REGISTRY_LOGIN_SERVER }}
+        username: ${{ secrets.ACR_REGISTRY_USERNAME }}
+        password: ${{ secrets.ACR_REGISTRY_PASS }}
+
+    - name: Build docker image and push to ACR
+      run: |
+          docker build -t ${{ secrets.ACR_REGISTRY_LOGIN_SERVER }}/${{ secrets.WEBAPP_NAME }}:latest .
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ secrets.WEBAPP_NAME }}:latest
