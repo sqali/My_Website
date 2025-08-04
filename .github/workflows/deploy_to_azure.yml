@@ -14,8 +14,11 @@ jobs:
     - name: Create a copy of the Github code in the container
       uses: actions/checkout@v2
 
+    - name: Install htmllint-cli
+      run: npm install -g htmllint-cli
+
     - name: Validate HTML
-      run: npx htmllint ./index.html
+      run: htmllint index.html
 
     - name: Login to ACR
       uses: azure/docker-login@v1
