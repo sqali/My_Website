@@ -14,6 +14,9 @@ jobs:
     - name: Create a copy of the Github code in the container
       uses: actions/checkout@v2
 
+    - name: Validate HTML
+      run: npx htmllint ./index.html
+
     - name: Login to ACR
       uses: azure/docker-login@v1
       with: 
@@ -21,7 +24,10 @@ jobs:
         username: ${{ secrets.ACR_REGISTRY_USERNAME }}
         password: ${{ secrets.ACR_REGISTRY_PASS }}
 
-    - name: Build docker image and push to ACR
+    - name: Build Docker image
       run: |
           docker build -t ${{ secrets.ACR_REGISTRY_LOGIN_SERVER }}/${{ secrets.WEBAPP_NAME }}:latest .
+
+    - name: Push Docker image to ACR
+      run: |
           docker push ${{ secrets.ACR_REGISTRY_LOGIN_SERVER }}/${{ secrets.WEBAPP_NAME }}:latest
